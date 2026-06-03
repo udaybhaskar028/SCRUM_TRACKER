@@ -1,0 +1,17 @@
+# Backend
+backend/target/
+backend/.mvn/
+*.class
+
+# Frontend
+frontend/node_modules/
+frontend/build/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Environment
+*.env
+application-prod.properties
