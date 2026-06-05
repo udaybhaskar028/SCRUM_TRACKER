@@ -5,14 +5,12 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Attach token to every request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-// Redirect to login on 401
 api.interceptors.response.use(
   (res) => res,
   (err) => {
@@ -51,6 +49,35 @@ export const updateApi = {
   managerEdit: (id, data) => api.put(`/updates/${id}/manager`, data),
   exportExcel: (sprintId) =>
     api.get(`/updates/export/${sprintId}`, { responseType: 'blob' }),
+};
+
+// --- Teams ---
+export const teamApi = {
+  create: (data) => api.post('/teams', data),
+  getMyTeams: () => api.get('/teams/my'),
+  getMemberships: () => api.get('/teams/memberships'),
+  joinByCode: (data) => api.post('/teams/join', data),
+  addMemberByEmail: (data) => api.post('/teams/add-member', data),
+  getMembers: (teamId) => api.get(`/teams/${teamId}/members`),
+  getUnassigned: () => api.get('/teams/unassigned'),
+  removeMember: (teamId, userId) => api.delete(`/teams/${teamId}/members/${userId}`),
+  hasTeam: () => api.get('/teams/has-team'),
+  getAllTeams: () => api.get('/teams/all'),
+};
+
+// --- Notes (Sticky) ---
+export const noteApi = {
+  getAll: () => api.get('/notes'),
+  create: (data) => api.post('/notes', data),
+  update: (id, data) => api.put(`/notes/${id}`, data),
+  delete: (id) => api.delete(`/notes/${id}`),
+};
+
+// --- Profile ---
+export const profileApi = {
+  get: () => api.get('/profile'),
+  update: (data) => api.put('/profile', data),
+  changePassword: (data) => api.put('/profile/change-password', data),
 };
 
 export default api;

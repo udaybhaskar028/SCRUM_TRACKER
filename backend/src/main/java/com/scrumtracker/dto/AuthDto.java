@@ -33,7 +33,10 @@ public class AuthDto {
         private String fullName;
 
         @NotBlank
-        private String role; // "MANAGER" or "USER"
+        private String role; // "MANAGER", "USER", "SUPERADMIN"
+
+        // Optional — user can join a team during registration
+        private String inviteCode;
     }
 
     @Data

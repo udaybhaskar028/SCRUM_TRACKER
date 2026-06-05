@@ -3,11 +3,15 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 const navItems = [
-  { path: '/dashboard', label: 'Dashboard', icon: '▦', roles: ['MANAGER', 'USER'] },
+  { path: '/dashboard', label: 'Dashboard', icon: '▦', roles: ['MANAGER', 'USER', 'SUPERADMIN'] },
   { path: '/my-update', label: 'My Standup', icon: '✏', roles: ['USER', 'MANAGER'] },
-  { path: '/my-notes', label: 'My Notes', icon: '📒', roles: ['USER', 'MANAGER'] },
-  { path: '/sprints', label: 'Sprints', icon: '⚡', roles: ['MANAGER', 'USER'] },
-  { path: '/setup', label: 'Sprint Setup', icon: '⚙', roles: ['MANAGER'] },
+  { path: '/notes', label: 'My Notes', icon: '📌', roles: ['USER', 'MANAGER', 'SUPERADMIN'] },
+  { path: '/sprints', label: 'Sprints', icon: '⚡', roles: ['MANAGER', 'USER', 'SUPERADMIN'] },
+  { path: '/teams', label: 'My Teams', icon: '👥', roles: ['MANAGER', 'USER'] },
+  { path: '/team-setup', label: 'Team Setup', icon: '⚙', roles: ['MANAGER'] },
+  { path: '/sprint-setup', label: 'Sprint Setup', icon: '🗓', roles: ['MANAGER'] },
+  { path: '/admin', label: 'Admin Overview', icon: '🛡', roles: ['SUPERADMIN'] },
+  { path: '/profile', label: 'Profile', icon: '👤', roles: ['MANAGER', 'USER', 'SUPERADMIN'] },
 ];
 
 export default function Sidebar() {
@@ -15,9 +19,12 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
+  const handleLogout = () => { logout(); navigate('/login'); };
+
+  const roleColor = {
+    MANAGER: 'var(--accent-purple)',
+    USER: 'var(--accent-blue)',
+    SUPERADMIN: 'var(--accent-orange)',
   };
 
   return (
@@ -25,30 +32,22 @@ export default function Sidebar() {
       width: collapsed ? 64 : 220,
       background: 'var(--bg-secondary)',
       borderRight: '1px solid var(--border)',
-      display: 'flex',
-      flexDirection: 'column',
+      display: 'flex', flexDirection: 'column',
       transition: 'width 0.2s ease',
-      flexShrink: 0,
-      height: '100vh',
-      position: 'sticky',
-      top: 0,
+      flexShrink: 0, height: '100vh',
+      position: 'sticky', top: 0,
     }}>
       {/* Logo */}
       <div style={{
         padding: collapsed ? '1.25rem 0' : '1.25rem 1rem',
         borderBottom: '1px solid var(--border)',
-        display: 'flex',
-        alignItems: 'center',
+        display: 'flex', alignItems: 'center',
         justifyContent: collapsed ? 'center' : 'space-between',
       }}>
         {!collapsed && (
           <div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 15, color: 'var(--accent-blue)' }}>
-              SCRUM
-            </div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-muted)' }}>
-              TRACKER
-            </div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 15, color: 'var(--accent-blue)' }}>SCRUM</div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-muted)' }}>TRACKER</div>
           </div>
         )}
         <button onClick={() => setCollapsed(!collapsed)} className="btn btn-ghost"
@@ -73,7 +72,10 @@ export default function Sidebar() {
               <div style={{ fontWeight: 600, fontSize: 13, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {user?.fullName}
               </div>
-              <span className={`badge ${isManager() ? 'tag-manager' : 'tag-user'}`} style={{ fontSize: 10 }}>
+              <span className="badge" style={{
+                fontSize: 10, background: `${roleColor[user?.role]}20`,
+                color: roleColor[user?.role]
+              }}>
                 {user?.role}
               </span>
             </div>
@@ -81,29 +83,22 @@ export default function Sidebar() {
         </div>
       )}
 
-      {/* Nav items */}
+      {/* Nav */}
       <nav style={{ flex: 1, padding: '0.75rem 0', overflowY: 'auto' }}>
         {navItems
           .filter(item => item.roles.includes(user?.role))
           .map(item => (
-            <NavLink
-              key={item.path}
-              to={item.path}
+            <NavLink key={item.path} to={item.path}
               style={({ isActive }) => ({
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem',
+                display: 'flex', alignItems: 'center', gap: '0.75rem',
                 padding: collapsed ? '0.6rem 0' : '0.6rem 1rem',
                 justifyContent: collapsed ? 'center' : 'flex-start',
                 color: isActive ? 'var(--accent-blue)' : 'var(--text-secondary)',
                 background: isActive ? 'rgba(88,166,255,0.1)' : 'transparent',
                 borderRight: isActive ? '2px solid var(--accent-blue)' : '2px solid transparent',
-                textDecoration: 'none',
-                fontSize: 14,
-                transition: 'all 0.15s',
+                textDecoration: 'none', fontSize: 14, transition: 'all 0.15s',
                 fontWeight: isActive ? 600 : 400,
-              })}
-            >
+              })}>
               <span style={{ fontSize: 16, width: 20, textAlign: 'center', flexShrink: 0 }}>{item.icon}</span>
               {!collapsed && <span>{item.label}</span>}
             </NavLink>

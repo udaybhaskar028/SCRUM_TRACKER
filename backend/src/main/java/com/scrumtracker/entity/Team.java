@@ -3,35 +3,29 @@ package com.scrumtracker.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
-@Table(name = "users")
+@Table(name = "teams")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-public class User {
+public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String username;
-
     @Column(nullable = false)
-    private String password;
+    private String name;
 
     @Column(nullable = false, unique = true)
-    private String email;
+    private String inviteCode;
 
-    @Column(nullable = false)
-    private String fullName;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id", nullable = false)
+    private User manager;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -39,9 +33,9 @@ public class User {
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
-    }
-
-    public enum Role {
-        SUPERADMIN, MANAGER, USER
+        if (inviteCode == null) {
+            // Generate a short 8-char uppercase invite code
+            inviteCode = UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
+        }
     }
 }

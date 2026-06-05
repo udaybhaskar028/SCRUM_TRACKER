@@ -12,6 +12,8 @@ public class SprintDto {
         private LocalDate endDate;
         private Integer totalStoryPoints;
         private Double hoursPerStoryPoint;
+        private String goal;
+        private Long teamId;
     }
 
     @Data
@@ -22,7 +24,12 @@ public class SprintDto {
         private LocalDate endDate;
         private Integer totalStoryPoints;
         private Double hoursPerStoryPoint;
+        private String goal;
         private String status;
         private String createdByName;
+        private Long teamId;
+        private String teamName;
+        private Integer sprintDays;
+        private Double totalCapacityHours;
     }
 }

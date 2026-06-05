@@ -23,12 +23,12 @@ public class SprintController {
 
     @GetMapping
     public ResponseEntity<List<SprintDto.Response>> getAllSprints() {
-        return ResponseEntity.ok(sprintService.getAllSprints());
+        return ResponseEntity.ok(sprintService.getSprintsForCurrentUser());
     }
 
     @GetMapping("/active")
     public ResponseEntity<List<SprintDto.Response>> getActiveSprints() {
-        return ResponseEntity.ok(sprintService.getActiveSprints());
+        return ResponseEntity.ok(sprintService.getActiveSprintsForUser());
     }
 
     @GetMapping("/{id}")
@@ -38,7 +38,9 @@ public class SprintController {
 
     @PutMapping("/{id}/status")
     @PreAuthorize("hasRole('MANAGER')")
-    public ResponseEntity<SprintDto.Response> updateStatus(@PathVariable Long id, @RequestParam String status) {
+    public ResponseEntity<SprintDto.Response> updateStatus(
+            @PathVariable Long id,
+            @RequestParam String status) {
         return ResponseEntity.ok(sprintService.updateSprintStatus(id, status));
     }
 }

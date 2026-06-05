@@ -25,17 +25,24 @@ public class Sprint {
     @Column(nullable = false)
     private LocalDate endDate;
 
-    // Total story points for this sprint
     @Column(nullable = false)
     private Integer totalStoryPoints;
 
-    // Hours per story point (baseline set by manager)
     @Column(nullable = false)
     private Double hoursPerStoryPoint;
+
+    // Sprint description / goal
+    @Column(columnDefinition = "TEXT")
+    private String goal;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SprintStatus status;
+
+    // Sprints now belong to a team
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id", nullable = false)
+    private Team team;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)

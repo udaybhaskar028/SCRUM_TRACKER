@@ -1,7 +1,11 @@
 package com.scrumtracker.service;
 
 import com.scrumtracker.dto.AuthDto;
+import com.scrumtracker.entity.Team;
+import com.scrumtracker.entity.TeamMember;
 import com.scrumtracker.entity.User;
+import com.scrumtracker.repository.TeamMemberRepository;
+import com.scrumtracker.repository.TeamRepository;
 import com.scrumtracker.repository.UserRepository;
 import com.scrumtracker.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,8 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     @Autowired private UserRepository userRepository;
+    @Autowired private TeamRepository teamRepository;
+    @Autowired private TeamMemberRepository teamMemberRepository;
     @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private AuthenticationManager authenticationManager;
     @Autowired private JwtUtils jwtUtils;
@@ -38,6 +44,8 @@ public class AuthService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already registered");
         }
+
+        // Create user
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -45,6 +53,20 @@ public class AuthService {
         user.setFullName(request.getFullName());
         user.setRole(User.Role.valueOf(request.getRole().toUpperCase()));
         userRepository.save(user);
+
+        // If invite code provided, join that team automatically
+        if (request.getInviteCode() != null && !request.getInviteCode().isBlank()) {
+            teamRepository.findByInviteCode(request.getInviteCode().toUpperCase())
+                    .ifPresent(team -> {
+                        if (!teamMemberRepository.existsByTeamAndUser(team, user)) {
+                            TeamMember member = new TeamMember();
+                            member.setTeam(team);
+                            member.setUser(user);
+                            member.setStatus(TeamMember.MemberStatus.ACTIVE);
+                            teamMemberRepository.save(member);
+                        }
+                    });
+        }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
         String token = jwtUtils.generateToken(userDetails);
