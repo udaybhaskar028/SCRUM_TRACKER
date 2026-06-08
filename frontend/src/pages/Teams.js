@@ -19,6 +19,7 @@ export default function Teams() {
       setTeams(r.data);
       if (r.data.length > 0) setSelectedTeam(r.data[0]);
     }).finally(() => setLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
