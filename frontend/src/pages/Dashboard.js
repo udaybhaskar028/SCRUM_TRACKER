@@ -2,10 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { sprintApi, updateApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { format } from 'date-fns';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function Dashboard() {
-  const { isManager, user } = useAuth();
+  const { isManager } = useAuth();
   const [sprints, setSprints] = useState([]);
   const [selectedSprint, setSelectedSprint] = useState(null);
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
