@@ -19,7 +19,7 @@ export default function TeamSetup() {
   const fetchTeams = () => teamApi.getMyTeams().then(r => { setTeams(r.data); if (r.data.length > 0 && !selectedTeam) setSelectedTeam(r.data[0]); });
   const fetchUnassigned = () => teamApi.getUnassigned().then(r => setUnassigned(r.data));
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+// eslint-disable-next-line react-hooks/exhaustive-deps
 useEffect(() => { fetchTeams(); fetchUnassigned(); }, []);
 
   useEffect(() => {

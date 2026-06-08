@@ -8,8 +8,8 @@ export default function Teams() {
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
-  
-// eslint-disable-next-line react-hooks/exhaustive-deps
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const fetch = isManager()
       ? teamApi.getMyTeams()
