@@ -3,12 +3,13 @@ import { teamApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 export default function Teams() {
-  const { user, isManager } = useAuth();
+  const { isManager } = useAuth();
   const [teams, setTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  
+// eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const fetch = isManager()
       ? teamApi.getMyTeams()
